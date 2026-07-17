@@ -1,3 +1,4 @@
+cat << 'EOF' > ~/bot_premium/bot_manager.sh
 #!/bin/bash
 get_bots() { pm list packages | grep "com.roblox." | sed 's/package:com.roblox.//'; }
 while true; do
@@ -55,3 +56,5 @@ while true; do
         *) echo "Pilihan tidak valid!" && sleep 1 ;;
     esac
 done
+EOF
+chmod +x ~/bot_premium/bot_manager.sh
