@@ -1,4 +1,3 @@
-cat << 'EOF' > bot_manager.sh
 #!/bin/bash
 get_bots() { pm list packages | grep "com.roblox." | sed 's/package:com.roblox.//'; }
 while true; do
@@ -10,7 +9,10 @@ while true; do
     for i in "${!BOTS[@]}"; do echo "$((i+1))) ${BOTS[$i]}"; done
     echo "----------------------------------"
     echo "A) Start All | 3) Log | S) Stop All | Q) Keluar"
+    echo "B) Backup Sesi | R) Restore Sesi"
+    echo "=================================="
     read -p "Pilihan: " PILIH
+
     case $PILIH in
         [0-9]*)
             SELECTED=${BOTS[$((PILIH-1))]}
@@ -26,8 +28,21 @@ while true; do
         S)
             tmux kill-server
             echo "Semua bot dihentikan." && sleep 2 ;;
+        B)
+            read -p "Masukkan nama bot (contoh: client1): " B_NAME
+            mkdir -p ~/sesi_backup/$B_NAME
+            su -c "cp -r /data/data/com.roblox.$B_NAME/files/* ~/sesi_backup/$B_NAME/"
+            echo "Sesi $B_NAME berhasil di-backup!" && sleep 2 ;;
+        R)
+            read -p "Masukkan nama bot untuk di-restore (contoh: client1): " R_NAME
+            if [ -d "~/sesi_backup/$R_NAME" ]; then
+                su -c "cp -r ~/sesi_backup/$R_NAME/* /data/data/com.roblox.$R_NAME/files/"
+                echo "Sesi $R_NAME berhasil dikembalikan!"
+            else
+                echo "Folder backup tidak ditemukan!"
+            fi
+            sleep 2 ;;
         Q) break ;;
         *) echo "Pilihan tidak valid!" && sleep 1 ;;
     esac
 done
-EOF
