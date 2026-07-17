@@ -19,13 +19,15 @@ while true; do
             tmux new-session -d -s "bot_$SELECTED" "./engine.sh $SELECTED"
             echo "Bot $SELECTED started!" && sleep 2 ;;
         A)
-           JEDA=90
-            for b in "${BOTS[@]}"; do 
-                # Pastikan nama sesi tmux benar-benar unik sesuai nama package
-                tmux new-session -d -s "bot_$b" "./engine.sh $b"
-                sleep $JEDA
-            done
-            sleep 1 ;;
+            # Jalankan antrean di latar belakang menggunakan fungsi &
+            (
+                JEDA=90
+                for b in "${BOTS[@]}"; do 
+                    tmux new-session -d -s "bot_$b" "./engine.sh $b"
+                    sleep $JEDA
+                done
+            ) &
+            echo "Antrean bot dijalankan di latar belakang." && sleep 2 ;;
         3)
             clear
             echo "Memantau log aktivitas (Tekan Ctrl+C untuk kembali)..."
