@@ -34,5 +34,5 @@ while true; do
     fi
     
     # Cek setiap 1 menit (60 detik)
-    sleep 300
+    sleep 60
 done
