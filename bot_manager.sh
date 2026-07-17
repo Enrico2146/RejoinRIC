@@ -21,10 +21,8 @@ while true; do
             echo "Bot $SELECTED started!" && sleep 2 ;;
         A)
             (
-            # Jeda 90 detik antar bot sudah sangat ideal untuk semua cloud
                 JEDA=90
                 for b in "${BOTS[@]}"; do 
-                    # Memastikan engine.sh selalu menggunakan path yang benar
                     tmux new-session -d -s "bot_$b" "./engine.sh $b"
                     sleep $JEDA
                 done
@@ -47,8 +45,8 @@ while true; do
             echo "Sesi $B_NAME berhasil di-backup!" && sleep 2 ;;
         R)
             read -p "Masukkan nama bot untuk di-restore (contoh: client1): " R_NAME
-            if [ -d ~/sesi_backup/$R_NAME ]; then
-                su -c "cp -r ~/sesi_backup/$R_NAME/* /data/data/com.roblox.$R_NAME/files/"
+            if [ -d "$HOME/sesi_backup/$R_NAME" ]; then
+                su -c "cp -r $HOME/sesi_backup/$R_NAME/* /data/data/com.roblox.$R_NAME/files/"
                 echo "Sesi $R_NAME berhasil dikembalikan!"
             else
                 echo "Folder backup tidak ditemukan!"
