@@ -1,13 +1,27 @@
 cat << 'EOF' > ~/bot_premium/bot_manager.sh
 #!/bin/bash
 get_bots() { pm list packages | grep "com.roblox." | sed 's/package:com.roblox.//'; }
+
+get_alias() {
+    local raw_name=$1
+    local LOG="/sdcard/Delta/GAG_LOG_${raw_name}.txt"
+    if [ -f "$LOG" ]; then
+        grep "player: " "$LOG" | head -n 1 | sed 's/player: //' | tr -d '\r' || echo "$raw_name"
+    else
+        echo "$raw_name"
+    fi
+}
+
 while true; do
     clear
     echo "=================================="
-    echo "    BOT MANAGER (PREMIUM LOGIC)   "
+    echo "    BOT MANAGER (PREMIUM LOGIC)    "
     echo "=================================="
     BOTS=($(get_bots))
-    for i in "${!BOTS[@]}"; do echo "$((i+1))) ${BOTS[$i]}"; done
+    for i in "${!BOTS[@]}"; do
+        ALIAS=$(get_alias "${BOTS[$i]}")
+        echo "$((i+1))) $ALIAS (ID: ${BOTS[$i]})"
+    done
     echo "----------------------------------"
     echo "A) Start All | 3) Log | S) Stop All | Q) Keluar"
     echo "B) Backup Sesi | R) Restore Sesi"
