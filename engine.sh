@@ -1,26 +1,38 @@
 #!/bin/bash
-# Nama paket diambil dari argumen pertama saat skrip dijalankan
-APP_NAME=$1
-LINK_GAME="roblox://placeId=97598239454123"
+# $1 adalah nama bot yang dikirim oleh bot_manager.sh
+BOT_NAME=$1
+LOG_FILE="/sdcard/Delta/GAG_LOG_${BOT_NAME}.txt"
+PACKAGE="com.roblox.$BOT_NAME"
+LINK="roblox://placeId=97598239454123"
 
-# Jeda acak 1-60 detik saat pertama kali jalan agar tidak menumpuk saat startup
-sleep $((RANDOM % 60))
+# Variabel untuk membandingkan isi log
+LAST_CONTENT=""
 
 while true; do
-    # Menggunakan pidof: cara paling enteng buat cek aplikasi jalan atau tidak
-    if ! pidof "com.roblox.$APP_NAME" > /dev/null; then
-        echo "[$(date)] $APP_NAME mati, restart..." >> ~/history.log
-        
-        su -c "am force-stop com.roblox.$APP_NAME"
-        sleep 5
-        
-        # Buka aplikasi dengan mode "nice" agar RAM tidak meledak (tidak diprioritaskan)
-        su -c "nice -n 19 am start -a android.intent.action.VIEW -d '$LINK_GAME' -p com.roblox.$APP_NAME"
-        
-        # Tunggu loading cukup lama agar bot lain tidak terganggu
-        sleep 60
+    # 1. Pastikan file log ada
+    if [ -f "$LOG_FILE" ]; then
+        # 2. Ambil isi file log (kita ambil 10 baris terakhir)
+        CURRENT_CONTENT=$(tail -n 5 "$LOG_FILE")
+
+        # 3. Bandingkan dengan konten sebelumnya
+        if [ "$CURRENT_CONTENT" == "$LAST_CONTENT" ]; then
+            # Jika konten sama persis dengan menit lalu, berarti bot FREEZE/ERROR
+            echo "[$(date)] $BOT_NAME terdeteksi FREEZE (Log statis), restart..." >> ~/history.log
+            
+            su -c "am force-stop $PACKAGE"
+            sleep 5
+            su -c "am start -a android.intent.action.VIEW -d '$LINK' -p $PACKAGE"
+            
+            # Tunggu 90 detik agar bot masuk game dengan tenang
+            sleep 90
+        else
+            # Jika konten berubah, berarti bot masih aktif farming
+            LAST_CONTENT="$CURRENT_CONTENT"
+        fi
+    else
+        echo "[$(date)] File log untuk $BOT_NAME tidak ditemukan!" >> ~/history.log
     fi
     
-    # Cek berkala tiap 3 menit (180 detik)
-    sleep 180
+    # Cek setiap 1 menit (60 detik)
+    sleep 300
 done
