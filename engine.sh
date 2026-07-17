@@ -1,20 +1,24 @@
 #!/bin/bash
 APP_NAME=$1
-# Pastikan APP_NAME yang masuk adalah nama paket lengkap (misal: client1)
+LINK_GAME="roblox://placeId=97598239454123"
 
 while true; do
-    # Cek apakah proses aplikasi dengan nama paket tersebut benar-benar mati
-    if ! pidof "com.roblox.$APP_NAME" > /dev/null; then
-        # Gunakan nama paket lengkap untuk force-stop agar tidak menyerempet bot lain
+    # Cek apakah aplikasi sedang fokus di layar (menggunakan logika skrip lama yang stabil)
+    REKOR_SISTEM=$(su -c "dumpsys window windows | grep -E 'mCurrentFocus|mFocusedApp'" | tr -d '\r')
+
+    if ! echo "$REKOR_SISTEM" | grep -q "com.roblox.$APP_NAME"; then
+        echo "[$(date)] Mendeteksi $APP_NAME tidak aktif/FC. Memulai ulang..." >> ~/history.log
+        
         su -c "am force-stop com.roblox.$APP_NAME"
-        sleep 10
+        sleep 2
         
-        # Buka aplikasi spesifik
-        su -c "monkey -p com.roblox.$APP_NAME -c android.intent.category.LAUNCHER 1"
-        sleep 30
+        # Buka aplikasi dengan Intent VIEW
+        su -c "am start -a android.intent.action.VIEW -d '$LINK_GAME' -p com.roblox.$APP_NAME"
         
-        # Join map
-        su -c "am start -a android.intent.action.VIEW -d 'roblox://placeId=97598239454123' -p com.roblox.$APP_NAME"
+        # Jeda tunggu loading yang dinamis (15-25 detik) agar tidak membebani RAM
+        sleep $((15 + RANDOM % 10))
     fi
-    sleep 60
+    
+    # Tunggu 30 detik sebelum pengecekan berikutnya
+    sleep 30
 done
