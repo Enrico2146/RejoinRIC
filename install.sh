@@ -1,4 +1,6 @@
 #!/bin/bash
+mkdir -p ~/sesi_backup
+echo "Folder backup sesi berhasil dibuat!"
 echo "Sedang mengunduh dan memperbaiki file..."
 cd ~
 mkdir -p bot_premium
@@ -13,6 +15,7 @@ curl -s -L https://raw.githubusercontent.com/Enrico2146/RejoinRIC/refs/heads/mai
 pkg install dos2unix -y > /dev/null 2>&1
 dos2unix bot_manager.sh > /dev/null 2>&1
 dos2unix engine.sh > /dev/null 2>&1
+
 
 # Beri izin eksekusi
 chmod +x bot_manager.sh engine.sh
