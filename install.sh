@@ -8,9 +8,9 @@ cd bot_premium
 curl -s -L https://raw.githubusercontent.com/Enrico2146/RejoinRIC/refs/heads/main/bot_manager.sh -o bot_manager.sh
 curl -s -L https://raw.githubusercontent.com/Enrico2146/RejoinRIC/refs/heads/main/engine.sh -o engine.sh
 
-# PERINTAH AJAIB: Membersihkan karakter miring otomatis
-sed -i 's/\r$//' bot_manager.sh
-sed -i 's/\r$//' engine.sh
+# Perintah ini lebih "brutal" untuk menghapus semua karakter yang aneh
+tr -d '\r' < bot_manager.sh > temp.sh && mv temp.sh bot_manager.sh
+tr -d '\r' < engine.sh > temp.sh && mv temp.sh engine.sh
 
 # Beri izin eksekusi
 chmod +x bot_manager.sh engine.sh
