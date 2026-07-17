@@ -23,7 +23,7 @@ while true; do
             (
                 JEDA=90
                 for b in "${BOTS[@]}"; do 
-                    tmux new-session -d -s "bot_$b" "./engine.sh $b"
+                    tmux kill-session -t "bot_$b" 2>/dev/null; tmux new-session -d -s "bot_$b" "./engine.sh $b"
                     sleep $JEDA
                 done
             ) &
