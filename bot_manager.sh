@@ -21,10 +21,10 @@ while true; do
         A)
            JEDA=90
             for b in "${BOTS[@]}"; do 
+                # Pastikan nama sesi tmux benar-benar unik sesuai nama package
                 tmux new-session -d -s "bot_$b" "./engine.sh $b"
                 sleep $JEDA
             done
-            # Teks di bawah A sudah dihilangkan sesuai permintaanmu
             sleep 1 ;;
         3)
             clear
