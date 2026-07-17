@@ -20,6 +20,7 @@ while true; do
             tmux new-session -d -s "bot_$SELECTED" "./engine.sh $SELECTED"
             echo "Bot $SELECTED started!" && sleep 2 ;;
         A)
+            (
             # Jeda 90 detik antar bot sudah sangat ideal untuk semua cloud
                 JEDA=90
                 for b in "${BOTS[@]}"; do 
