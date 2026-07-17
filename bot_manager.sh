@@ -33,8 +33,17 @@ while true; do
             echo "Memantau log aktivitas (Tekan Ctrl+C untuk kembali)..."
             tail -n 20 -f ~/history.log ;;
         S)
+           S)
+            echo "🛑 Menghentikan semua bot..."
+            # 1. Matikan semua sesi tmux agar engine.sh berhenti
             tmux kill-server
-            echo "Semua bot dihentikan." && sleep 2 ;;
+            
+            # 2. Force stop semua paket aplikasi yang mengandung nama roblox
+            # Ini akan menyapu bersih semua aplikasi roblox yang sedang jalan
+            su -c "pm list packages | grep 'roblox' | sed 's/package://' | xargs -L1 am force-stop"
+            
+            echo "✅ Semua bot berhasil dihentikan!"
+            sleep 2 ;;
         B)
             read -p "Masukkan nama bot (contoh: client1): " B_NAME
             mkdir -p ~/sesi_backup/$B_NAME
