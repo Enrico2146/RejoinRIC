@@ -2,23 +2,24 @@
 APP_NAME=$1
 LINK_GAME="roblox://placeId=97598239454123"
 
-while true; do
-    # Cek apakah aplikasi sedang fokus di layar (menggunakan logika skrip lama yang stabil)
-    REKOR_SISTEM=$(su -c "dumpsys window windows | grep -E 'mCurrentFocus|mFocusedApp'" | tr -d '\r')
+# Beri jeda awal acak agar tidak membebani sistem saat pertama kali dijalankan
+sleep $((RANDOM % 30))
 
-    if ! echo "$REKOR_SISTEM" | grep -q "com.roblox.$APP_NAME"; then
-        echo "[$(date)] Mendeteksi $APP_NAME tidak aktif/FC. Memulai ulang..." >> ~/history.log
+while true; do
+    # Pengecekan lebih pasif: hanya jika aplikasi benar-benar hilang dari daftar proses
+    if ! pidof "com.roblox.$APP_NAME" > /dev/null; then
+        echo "[$(date)] $APP_NAME terdeteksi mati, bersiap restart..." >> ~/history.log
         
         su -c "am force-stop com.roblox.$APP_NAME"
-        sleep 2
+        sleep 5
         
-        # Buka aplikasi dengan Intent VIEW
+        # Buka aplikasi dengan cara yang paling ringan
         su -c "am start -a android.intent.action.VIEW -d '$LINK_GAME' -p com.roblox.$APP_NAME"
         
-        # Jeda tunggu loading yang dinamis (15-25 detik) agar tidak membebani RAM
-        sleep $((15 + RANDOM % 10))
+        # Jeda loading diperpanjang supaya tidak bentrok dengan proses lain
+        sleep 60
     fi
     
-    # Tunggu 30 detik sebelum pengecekan berikutnya
-    sleep 30
+    # Mode santai: cek lagi 3 menit kemudian
+    sleep 180
 done
