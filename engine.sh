@@ -1,6 +1,8 @@
 #!/bin/bash
 APP_NAME=$1
 
+sleep $((RANDOM % 10))
+
 while true; do
     # Cek apakah aplikasi bot sedang berjalan
     if ! pidof "com.roblox.$APP_NAME" > /dev/null; then
