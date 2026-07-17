@@ -33,7 +33,6 @@ while true; do
             echo "Memantau log aktivitas (Tekan Ctrl+C untuk kembali)..."
             tail -n 20 -f ~/history.log ;;
         S)
-           S)
             echo "🛑 Menghentikan semua bot..."
             # 1. Matikan semua sesi tmux agar engine.sh berhenti
             tmux kill-server
