@@ -1,25 +1,26 @@
 #!/bin/bash
+# Nama paket diambil dari argumen pertama saat skrip dijalankan
 APP_NAME=$1
 LINK_GAME="roblox://placeId=97598239454123"
 
-# Beri jeda awal acak agar tidak membebani sistem saat pertama kali dijalankan
-sleep $((RANDOM % 30))
+# Jeda acak 1-60 detik saat pertama kali jalan agar tidak menumpuk saat startup
+sleep $((RANDOM % 60))
 
 while true; do
-    # Pengecekan lebih pasif: hanya jika aplikasi benar-benar hilang dari daftar proses
+    # Menggunakan pidof: cara paling enteng buat cek aplikasi jalan atau tidak
     if ! pidof "com.roblox.$APP_NAME" > /dev/null; then
-        echo "[$(date)] $APP_NAME terdeteksi mati, bersiap restart..." >> ~/history.log
+        echo "[$(date)] $APP_NAME mati, restart..." >> ~/history.log
         
         su -c "am force-stop com.roblox.$APP_NAME"
         sleep 5
         
-        # Buka aplikasi dengan cara yang paling ringan
-        su -c "am start -a android.intent.action.VIEW -d '$LINK_GAME' -p com.roblox.$APP_NAME"
+        # Buka aplikasi dengan mode "nice" agar RAM tidak meledak (tidak diprioritaskan)
+        su -c "nice -n 19 am start -a android.intent.action.VIEW -d '$LINK_GAME' -p com.roblox.$APP_NAME"
         
-        # Jeda loading diperpanjang supaya tidak bentrok dengan proses lain
+        # Tunggu loading cukup lama agar bot lain tidak terganggu
         sleep 60
     fi
     
-    # Mode santai: cek lagi 3 menit kemudian
+    # Cek berkala tiap 3 menit (180 detik)
     sleep 180
 done
