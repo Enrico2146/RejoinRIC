@@ -19,14 +19,13 @@ while true; do
             tmux new-session -d -s "bot_$SELECTED" "./engine.sh $SELECTED"
             echo "Bot $SELECTED started!" && sleep 2 ;;
         A)
-            # Kamu bisa atur berapa detik jeda antar bot di sini
-            JEDA=45
+           JEDA=90
             for b in "${BOTS[@]}"; do 
-                echo "Menjalankan $b, menunggu $JEDA detik untuk bot berikutnya..."
                 tmux new-session -d -s "bot_$b" "./engine.sh $b"
                 sleep $JEDA
             done
-            echo "Semua bot sudah dijalankan secara bergiliran!" && sleep 2 ;;
+            # Teks di bawah A sudah dihilangkan sesuai permintaanmu
+            sleep 1 ;;
         3)
             clear
             echo "Memantau log aktivitas (Tekan Ctrl+C untuk kembali)..."
