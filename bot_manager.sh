@@ -19,7 +19,6 @@ while true; do
             tmux new-session -d -s "bot_$SELECTED" "./engine.sh $SELECTED"
             echo "Bot $SELECTED started!" && sleep 2 ;;
         A)
-            # Jalankan antrean di latar belakang menggunakan fungsi &
             (
                 JEDA=90
                 for b in "${BOTS[@]}"; do 
@@ -34,13 +33,8 @@ while true; do
             tail -n 20 -f ~/history.log ;;
         S)
             echo "🛑 Menghentikan semua bot..."
-            # 1. Matikan semua sesi tmux agar engine.sh berhenti
             tmux kill-server
-            
-            # 2. Force stop semua paket aplikasi yang mengandung nama roblox
-            # Ini akan menyapu bersih semua aplikasi roblox yang sedang jalan
             su -c "pm list packages | grep 'roblox' | sed 's/package://' | xargs -L1 am force-stop"
-            
             echo "✅ Semua bot berhasil dihentikan!"
             sleep 2 ;;
         B)
@@ -50,7 +44,7 @@ while true; do
             echo "Sesi $B_NAME berhasil di-backup!" && sleep 2 ;;
         R)
             read -p "Masukkan nama bot untuk di-restore (contoh: client1): " R_NAME
-            if [ -d "~/sesi_backup/$R_NAME" ]; then
+            if [ -d ~/sesi_backup/$R_NAME ]; then
                 su -c "cp -r ~/sesi_backup/$R_NAME/* /data/data/com.roblox.$R_NAME/files/"
                 echo "Sesi $R_NAME berhasil dikembalikan!"
             else
